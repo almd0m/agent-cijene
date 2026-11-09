@@ -1,0 +1,187 @@
+ŠTA JE URAĐENO NA AKCIJE-AGENTU (8.11.2026.)
+=============================================
+
+UKRATKO
+-------
+Program sada skuplja akcije iz 4 prodavnice (Voli, Cosmetics, Kuća hemije, Idea),
+pravi web stranicu sa svim akcijama, šalje kratak email sa linkom i pamti istoriju cijena.
+Prva proba uživo: 308 proizvoda ≥30% (Voli 113, Cosmetics 143, Kuća hemije 52).
+Idea čeka Gemini ključ (vidi "ŠTA TI TREBA DA URADIŠ").
+Testova: 107, svi prolaze.
+
+
+0) DVIJE POPRAVKE NA POČETKU
+----------------------------
+a) U .env adresa je imala dva @ (almedinmekic84@@gmail.com). Ispravljeno, test email je stigao.
+
+b) BUG: jedan test je slučajno slao PRAVI email. Program je tražio .env fajl
+   "prema gore" od foldera gdje je kod, pa je i tokom testova našao tvoj pravi ključ.
+   Zato ti je možda stigao jedan prazan email "Akcije ≥30%: 0 proizvoda". Sada se .env
+   čita samo iz foldera u kom pokrećeš program, pa testovi više ništa ne šalju.
+
+
+1) KORAK 2: WEB STRANICA + KRATAK EMAIL
+--------------------------------------
+Zašto: email sa 300 redova je nepregledan.
+
+- site/index.html: jedna stranica, bez frameworka. Ima:
+  dugmad za prodavnice, izbor kategorije, pretragu, klizač za minimalni popust,
+  sortiranje (popust / cijena / naziv / ističe uskoro), "samo nove 🆕".
+  Na telefonu prikazuje kartice. Radi i u tamnom režimu.
+- site/akcije.json: podaci za stranicu. Program ga piše pri svakom pokretanju.
+- Bezbjednost: tekst sa sajtova se ubacuje samo kao običan tekst (textContent),
+  a linkovi se prihvataju samo ako počinju sa https://. Tako zlonamjeran naziv
+  proizvoda ne može pokrenuti kod na stranici.
+- Email: ako je postavljen SITE_URL, email je kratak: broj akcija po prodavnici,
+  top 5 po popustu i dugme "Otvori sve akcije →". Bez SITE_URL ostaje puna tabela
+  kao do sada, tako da ništa ne prestaje da radi.
+- GitHub Actions poslije svakog pokretanja commituje site/akcije.json (samo ako se
+  promijenio), a Vercel na taj commit sam objavi novu verziju stranice.
+
+Lokalni pregled stranice:
+    .venv\Scripts\python.exe -m http.server 8765 --directory site
+    pa otvori http://127.0.0.1:8765/
+(Dupli klik na index.html NE radi, jer pretraživač ne dozvoljava čitanje JSON-a sa diska.)
+
+
+2) KORAK 3: COSMETICS + KUĆA HEMIJE + FILTER "MUŠKI"
+--------------------------------------------------
+Cosmetics (akcije/adapters/cosmetics.py)
+- Koristi njihov interni JSON API. Otkrio sam da prima per_page=100, pa umjesto
+  185 zahtjeva treba samo 37 (oko 1 minut).
+- Beauty Friend cijene se ignorišu, kako je dogovoreno.
+
+Kuća hemije (akcije/adapters/kucahemije.py)
+- Njihova /akcije stranica ima 6 MB po stranici (32 proizvoda), a takvih stranica je
+  oko 68. To je previše. Otkrio sam da sajt (Magento) ima javni GraphQL koji vraća
+  100 proizvoda u nekoliko KB. Čita se samo 6 kategorija gdje su muški proizvodi
+  (Muška njega, Muški parfemi, setovi, dezodoransi, kupanje, poklon setovi),
+  ukupno oko 18 malih zahtjeva.
+
+Filter "isključivo muški" (akcije/gender.py), za Cosmetics i Kuću hemije:
+- Jake riječi u NAZIVU (men, man, homme, uomo, muški, for him, Old Spice, Axe...)
+  imaju prednost nad kategorijom prodavnice. Na primjer, Cosmetics ima "D&G K EDP man"
+  u kategoriji "za žene", a on ipak ulazi.
+- Slabe riječi (brijač, brijanje, after shave, Gillette, brada) važe samo ako
+  kategorija nije ženska, jer "brijač" u kategoriji "Brijač ženski" je ženski.
+  (Ovu grešku su uhvatili testovi i ispravljena je.)
+- Ženske riječi (ženski, women, Venus, lady...) i unisex uvijek isključuju proizvod.
+- Parfemi i dezodoransi bez ikakvog signala su "nejasni": pita se Gemini.
+  Bez Gemini-ja oni se izostavljaju (pravilo "u sumnji ne ulazi").
+- Poznato ograničenje: ako prodavnica pogrešno stavi ženski proizvod u mušku
+  kategoriju (npr. Burberry Goddess kod Cosmetics), on uđe u izvještaj.
+
+
+3) KORAK 4: IDEA KATALOZI (akcije/adapters/idea.py + akcije/gemini.py)
+--------------------------------------------------------------------
+- Sa idea.co.me/Katalozi čita listu kataloga i datume važenja (iz naziva linka,
+  hrvatski mjeseci: listopad=10, studeni=11...). Istekli katalozi se preskaču.
+- Iz iPaper prikazivača uzima tekst svih strana. Tekst je izmiješan, npr.
+  "-39% cijena uz 1 99 super karticu 3,25 EUR MASLAC Moja Kravica 125g"
+  znači: 1,99 € umjesto 3,25 €, samo uz Super karticu.
+- Popravlja razdvojena slova: "Č OKOLADA" → "ČOKOLADA", "VO Ć E" → "VOĆE".
+- Gemini (besplatni) dobija 12 strana odjednom i vraća listu proizvoda.
+- ZAŠTITA OD IZMIŠLJANJA: svaki proizvod koji Gemini vrati se provjerava:
+    * obje cijene moraju zaista postojati u tekstu te strane,
+    * štampani procenat mora odgovarati cijenama (±2 %),
+    * bez procenta popust ne smije biti veći od 80 %.
+  Šta ne prođe, odbacuje se.
+- Link kod svakog Idea proizvoda vodi na tačnu stranu kataloga, da možeš provjeriti.
+- Ako jedan katalog padne, ostali se i dalje obrađuju.
+- Gemini klijent šalje ključ u zaglavlju (ne u linku), čeka 7 s između poziva
+  (free tier limit) i ponovo pokušava ako dobije 429 (previše zahtjeva).
+- Model: "gemini-flash-latest" (uvijek najnoviji Flash, da ne prestane raditi kad
+  Google ugasi staru verziju). Može se promijeniti sa GEMINI_MODEL u .env.
+
+
+4) KORAK 5: ISTORIJA CIJENA (akcije/history.py, fajl data/istorija.sqlite)
+-------------------------------------------------------------------------
+- Pri svakom pravom pokretanju (ne pri --dry-run) zapisuje cijene svih akcija.
+  Ako se cijena nije promijenila, samo pomjeri datum "zadnji put viđeno", pa fajl
+  ostaje mali. Podaci stariji od 400 dana se brišu.
+- 🆕 = proizvoda nije bilo na akciji u prošlom izvještaju.
+  (Pri prvom pokretanju ništa nije označeno kao novo, jer nema sa čim da se poredi.)
+- ⚠️ = "stara" cijena je sada više od 5 % veća od najniže stare cijene u zadnjih
+  90 dana. To znači da je prodavnica možda podigla cijenu da bi popust izgledao veći.
+- --samo-nove (ili ONLY_NEW=1) = u emailu samo nove akcije. Stranica i dalje sve.
+- Ograničenje: Voli i Cosmetics prikazuju proizvod samo dok je na akciji, pa se
+  njegova redovna cijena zna samo iz ranijih akcija.
+
+
+5) OSTALO
+---------
+- GitHub Actions (.github/workflows/run.yml): dodat GEMINI_API_KEY, SITE_URL,
+  ONLY_NEW i korak koji commituje akcije.json i istoriju nazad u repo.
+- .env.example: dodate nove varijable sa objašnjenjem.
+- README.md: ažuriran (izvori, pravila, Vercel uputstvo, tabela varijabli).
+- Testovi: 50 novih testova za sve gore (bez interneta, sa lažnim
+  sajtovima i lažnim Gemini-jem).
+
+
+ŠTA TI TREBA DA URADIŠ
+----------------------
+1. GEMINI KLJUČ (za Idea): idi na https://aistudio.google.com/apikey, napravi
+   besplatan ključ i upiši ga u .env:   GEMINI_API_KEY=tvoj_kljuc
+   Pa pokreni:   .venv\Scripts\python.exe -m akcije --dry-run
+   i pogledaj da li Idea proizvodi izgledaju tačno. (Ovo nisam mogao testirati
+   uživo bez ključa, samo sa lažnim Gemini-jem u testovima.)
+2. GITHUB: napravi privatan repo, pushaj folder, upiši Secrets (RESEND_API_KEY,
+   REPORT_TO, GEMINI_API_KEY), a u Settings → Actions → General uključi
+   "Read and write permissions".
+3. VERCEL: novi projekat iz tog repoa, Root Directory = site. Dobijeni link upiši
+   na GitHubu kao Variable SITE_URL. Od tada email postaje kratak, sa linkom.
+4. Ako u GitHub Secretu REPORT_TO imaš grešku sa dva @, ispravi je.
+
+
+KOMANDE ZA PAMĆENJE
+-------------------
+.venv\Scripts\python.exe -m pytest -q              testovi
+.venv\Scripts\python.exe -m akcije --dry-run       proba bez emaila (pravi izvjestaj.html i site/akcije.json)
+.venv\Scripts\python.exe -m akcije                 pravi run: istorija + email
+.venv\Scripts\python.exe -m akcije --samo-nove     email samo sa novim akcijama
+.venv\Scripts\python.exe -m akcije --min-discount 40   drugi prag popusta
+
+
+=====================================================================
+DRUGI DIO (isti dan): TEST IDEA + RAZVRSTAVANJE PO KATEGORIJAMA
+=====================================================================
+
+6) IDEA SA PRAVIM GEMINI KLJUČEM
+-------------------------------
+- Prvi pokušaj nije uspio: model "gemini-flash-latest" je model koji "razmišlja"
+  i trebalo mu je 236 sekundi za 3 strane kataloga, pa je isteklo vrijeme.
+- Isprobao sam varijante. "gemini-flash-lite-latest" je uradio isti posao za
+  4 sekunde, skoro jednako tačno. Sada je to podrazumijevani model.
+- Moja provjera cijena je bila prestroga: u tekstu "cijena uz 1 super karticu 89"
+  euri i centi su razdvojeni riječima, pa sam odbacivao tačne proizvode. Popravljeno.
+- Rezultat: katalog "Redovna akcija" → ~400 provjerenih akcija za ~2 minuta,
+  ~15 stavki odbačeno jer nijesu prošle provjeru (to je dobro, to su greške).
+- Katalozi "Specijal Italije" i "Novogodišnji specijal" nemaju tekst, samo slike
+  stranica. Za njih bi trebao OCR (čitanje slika), pa se za sada preskaču.
+  U logu piše: "nema teksta (samo slike), preskočen".
+- Cijeli program sa sve 4 prodavnice traje oko 5 minuta.
+  Prva puna proba: 390 proizvoda ≥30% (Voli 117, Idea 78, Cosmetics 143, Kuća hemije 52).
+
+7) RAZVRSTAVANJE PO KATEGORIJAMA (akcije/categories.py)
+-----------------------------------------------------
+- Problem: svaka prodavnica ima svoje kategorije. Voli ih ima stotine
+  ("Tuna", "Biber", "DEO", "Barovi i impulsi"...), Cosmetics svoje, Idea nijednu.
+- Sada svaki proizvod dobija jednu od 16 ZAJEDNIČKIH kategorija:
+    Bebe i djeca, Kućni ljubimci, Smrznuto, Parfemi, Odjeća i ostalo,
+    Lična higijena, Kozmetika i njega, Domaćinstvo i čišćenje, Piće,
+    Mliječni proizvodi i jaja, Meso i riba, Voće i povrće,
+    Hljeb/tjestenina/žitarice, Slatkiši i grickalice, Namirnice i začini, Ostalo.
+- Kako radi: lista ključnih riječi po kategoriji (npr. "tuna, salama, kobasica"
+  → Meso i riba). Prvo se gleda kategorija prodavnice, pa naziv proizvoda.
+  Redoslijed je bitan: "Smrznuta piletina" ide u Smrznuto, ne u Meso.
+- Idea: Gemini bira kategoriju sa iste liste (ne smije izmisliti novu), ali ako
+  naziv sadrži jasnu riječ, ona ima prednost. Npr. Gemini je stavio "MUŠKI BRIJAČ"
+  u Domaćinstvo, a pravilo ga premješta u Ličnu higijenu.
+- Na STRANICI: proizvodi su u odjeljcima sa naslovom i brojem (npr. "Meso i riba 21"),
+  a padajući meni bira kategoriju. Originalna kategorija prodavnice piše na kartici.
+- U EMAILU: kratak email ima red "Po kategorijama: Parfemi 130 · Lična higijena 72...",
+  a puna tabela (bez SITE_URL) je grupisana po istim kategorijama.
+- Ako neki proizvod završi u pogrešnoj kategoriji, rješava se dodavanjem riječi
+  u listu u akcije/categories.py (to mogu ja uraditi kad primijetiš).
+
+Testova sada: 127, svi prolaze.

@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="sr-Latn-ME">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>Akcije</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #fff; --text: #1d2125; --muted: #6b7280; --line: #e5e7eb;
+    --accent: #1a5fb4; --accent-text: #fff; --sale: #c01c28; --chip: #eef2f7; --warn-bg: #fff4e5; --warn-line: #f0b46a;
+    --ok: #26734d; --shadow: 0 -4px 24px rgba(0, 0, 0, .15);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111418; --card: #1b1f24; --text: #e6e8eb; --muted: #9aa3ad; --line: #2c323a;
+      --accent: #6ea8ff; --accent-text: #0b1220; --sale: #ff7b84; --chip: #262c34; --warn-bg: #3a2a12; --warn-line: #8a6420;
+      --ok: #6fd3a0; --shadow: 0 -4px 24px rgba(0, 0, 0, .5);
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 20px 16px 8px; max-width: 1100px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 24px; }
+  #meta { color: var(--muted); margin-top: 4px; font-size: 13px; }
+  main { max-width: 1100px; margin: 0 auto; padding: 0 16px 90px; }
+  .controls { display: grid; gap: 10px; padding: 12px 0; position: sticky; top: 0; background: var(--bg); z-index: 2; }
+  .stores { display: flex; flex-wrap: wrap; gap: 6px; }
+  .stores button { border: 1px solid var(--line); background: var(--card); color: var(--text); padding: 6px 12px; border-radius: 999px; cursor: pointer; font: inherit; }
+  .stores button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .row.three { grid-template-columns: 2fr 1fr 1fr; }
+  input[type=search], select { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--text); font: inherit; }
+  label.slider { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+  label.slider input { flex: 1; }
+  #count { color: var(--muted); font-size: 13px; }
+  .errors { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 8px; padding: 8px 12px; margin: 8px 0; }
+  .errors ul { margin: 4px 0 0; padding-left: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .card .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+  .pct { color: var(--sale); font-weight: 700; font-size: 18px; white-space: nowrap; }
+  .store { font-size: 12px; background: var(--chip); padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .name { font-weight: 600; word-break: break-word; }
+  .name a { color: inherit; text-decoration: none; }
+  .name a:hover { text-decoration: underline; }
+  .price { font-size: 17px; font-weight: 700; }
+  .old { color: var(--muted); text-decoration: line-through; font-size: 13px; margin-left: 6px; font-weight: 400; }
+  .foot { color: var(--muted); font-size: 12px; display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+  .stale { background: var(--warn-bg); border: 1px solid var(--warn-line); color: var(--text); border-radius: 6px; padding: 1px 6px; }
+  .group h2 { font-size: 18px; margin: 22px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+  .group h2 .n { color: var(--muted); font-weight: 400; font-size: 14px; }
+  .empty { color: var(--muted); padding: 40px 0; text-align: center; }
+  button.add { align-self: flex-start; border: 1px solid var(--accent); background: transparent; color: var(--accent); border-radius: 8px; padding: 6px 12px; font: inherit; font-weight: 600; cursor: pointer; }
+  button.add.on { background: var(--accent); color: var(--accent-text); }
+  @media (max-width: 560px) { .row.three { grid-template-columns: 1fr 1fr; } .row.three > :first-child { grid-column: 1 / -1; } }
+
+  /* Shopping list: bottom bar + drawer on phones, side panel on wide screens */
+  .cartbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; display: flex; align-items: center; gap: 8px; width: 100%;
+    border: 0; border-top: 1px solid var(--line); background: var(--accent); color: var(--accent-text); padding: 14px 16px;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom)); font: inherit; font-weight: 600; cursor: pointer; box-shadow: var(--shadow); }
+  .cartbar .grow { flex: 1; text-align: left; }
+  .backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, .4); z-index: 11; }
+  .cart { position: fixed; left: 0; right: 0; bottom: 0; z-index: 12; max-height: 85vh; overflow-y: auto; background: var(--card);
+    border-radius: 14px 14px 0 0; box-shadow: var(--shadow); padding: 0 16px calc(16px + env(safe-area-inset-bottom)); }
+  .cart-head { position: sticky; top: 0; background: var(--card); display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0 10px; border-bottom: 1px solid var(--line); z-index: 1; }
+  .cart-head h2 { margin: 0; font-size: 18px; }
+  .icon { border: 1px solid var(--line); background: var(--card); color: var(--text); border-radius: 8px; min-width: 36px; height: 36px;
+    font: inherit; font-size: 16px; cursor: pointer; }
+  .icon:disabled { opacity: .4; cursor: default; }
+  .cart .warn { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 8px; padding: 8px 10px; margin: 10px 0 0; font-size: 13px; }
+  .cstore { margin-top: 14px; }
+  .cstore h3 { display: flex; justify-content: space-between; gap: 8px; font-size: 15px; margin: 0 0 6px; padding-bottom: 4px; border-bottom: 2px solid var(--line); }
+  .cstore h3 .sub { color: var(--muted); font-weight: 400; font-size: 13px; text-align: right; }
+  .item { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .item label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+  .item input[type=checkbox] { width: 20px; height: 20px; margin: 1px 0 0; flex: none; }
+  .item .iname { word-break: break-word; }
+  .item.bought .iname { text-decoration: line-through; color: var(--muted); }
+  .item.expired .iname { color: var(--muted); }
+  .item .line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 6px 0 0 28px; }
+  .item .iprice { font-weight: 700; }
+  .item .note { color: var(--muted); font-size: 12px; }
+  .item .gone { color: var(--sale); font-weight: 600; font-size: 13px; }
+  .item .changed { color: var(--sale); font-size: 12px; }
+  .item .qty { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
+  .item .qty output { min-width: 34px; text-align: center; font-weight: 600; }
+  .item .ltotal { min-width: 70px; text-align: right; font-weight: 600; }
+  .totals { margin-top: 14px; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; font-size: 15px; }
+  .totals .big { font-weight: 700; font-size: 17px; }
+  .totals .saved { color: var(--ok); font-weight: 700; }
+  .totals .hint { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
+  .cart-actions { display: flex; gap: 8px; margin-top: 14px; }
+  .cart-actions button { flex: 1; padding: 10px; border-radius: 8px; font: inherit; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--text); }
+  .cart-actions #share { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  #cartMsg { margin-top: 8px; font-size: 13px; color: var(--ok); min-height: 1em; }
+  #shareText { width: 100%; min-height: 160px; margin-top: 8px; font: 13px/1.4 ui-monospace, monospace; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
+  .cart-empty { color: var(--muted); padding: 24px 0; text-align: center; }
+
+  @media (min-width: 900px) {
+    .cartbar { left: auto; right: 16px; bottom: 16px; width: auto; border-radius: 999px; padding: 12px 20px; }
+    .backdrop { display: none; }
+    .cart { left: auto; top: 0; right: 0; bottom: 0; width: 380px; max-height: none; border-radius: 0; border-left: 1px solid var(--line); }
+    body.cart-open { margin-right: 380px; }
+    body.cart-open .cartbar { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Akcije</h1>
+  <div id="meta">Učitavam…</div>
+</header>
+<main>
+  <div id="errors"></div>
+  <div class="controls">
+    <div class="stores" id="stores" role="group" aria-label="Prodavnica"></div>
+    <div class="row three">
+      <input type="search" id="q" placeholder="Pretraga po nazivu…" aria-label="Pretraga po nazivu">
+      <select id="category" aria-label="Kategorija"><option value="">Sve kategorije</option></select>
+      <select id="sort" aria-label="Sortiranje">
+        <option value="discount">Najveći popust</option>
+        <option value="price">Najniža cijena</option>
+        <option value="name">Naziv A–Ž</option>
+        <option value="valid">Ističe uskoro</option>
+      </select>
+    </div>
+    <div class="row">
+      <label class="slider">Min. popust <input type="range" id="min" min="0" max="90" step="5" value="30"> <span id="minv">30%</span></label>
+      <label class="slider"><input type="checkbox" id="onlyNew"> samo nove 🆕</label>
+    </div>
+    <div id="count"></div>
+  </div>
+  <div id="list"></div>
+</main>
+
+<button type="button" id="cartBar" class="cartbar" hidden aria-expanded="false" aria-controls="cart">
+  <span aria-hidden="true">🛒</span><span class="grow" id="cartBarText">Lista</span><span aria-hidden="true">▲</span>
+</button>
+<div id="backdrop" class="backdrop" hidden></div>
+<aside id="cart" class="cart" hidden role="dialog" aria-modal="false" aria-labelledby="cartTitle">
+  <div class="cart-head">
+    <h2 id="cartTitle">🛒 Šoping lista</h2>
+    <button type="button" class="icon" id="cartClose" aria-label="Zatvori listu">✕</button>
+  </div>
+  <div id="cartWarn"></div>
+  <div id="cartBody"></div>
+  <div id="cartTotals" class="totals"></div>
+  <div class="cart-actions" id="cartActions">
+    <button type="button" id="share">Podijeli</button>
+    <button type="button" id="clear">Isprazni listu</button>
+  </div>
+  <div id="cartMsg" role="status" aria-live="polite"></div>
+  <textarea id="shareText" hidden readonly aria-label="Tekst liste za kopiranje"></textarea>
+</aside>
+
+<script>
+"use strict";
+// All store data is untrusted: it is only ever written with textContent, links must be https.
+const state = { offers: [], groups: [], store: "", q: "", category: "", sort: "discount", min: 30, onlyNew: false, byKey: new Map(), loaded: false };
+const $ = (id) => document.getElementById(id);
+const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+// Money is handled in integer cents; floats from JSON are converted once with Math.round.
+const toCents = (v) => { const n = Number(v); return Number.isFinite(n) && n >= 0 ? Math.round(n * 100) : null; };
+const fmt = (cents) => `${cents < 0 ? "−" : ""}${Math.floor(Math.abs(cents) / 100)},${String(Math.abs(cents) % 100).padStart(2, "0")} €`;
+const money = (v) => fmt(toCents(v) ?? 0);
+const fold = (s) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "dj");
+const dateLabel = (iso) => { if (!iso) return ""; const [y, m, d] = iso.split("-").map(Number); return `${d}.${m}.`; };
+const safeUrl = (u) => { try { const x = new URL(u); return x.protocol === "https:" ? x.href : null; } catch { return null; } };
+const todayIso = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+const itemKey = (store, productId) => JSON.stringify([String(store), String(productId)]);
+const isKg = (unit) => typeof unit === "string" && unit.trim().toLowerCase() === "kg";
+
+fetch("akcije.json", { cache: "no-store" })
+  .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(init)
+  .catch(() => { $("meta").textContent = "Podaci trenutno nijesu dostupni."; renderCart(); });
+
+function init(data) {
+  state.offers = Array.isArray(data.offers) ? data.offers : [];
+  state.offers.forEach((o) => {
+    o.group = o.group || o.category || "Ostalo";
+    if (o.product_id != null && o.store) state.byKey.set(itemKey(o.store, o.product_id), o);
+  });
+  state.loaded = true;
+  state.groups = Array.isArray(data.groups) ? data.groups : [];
+  state.min = Number(data.min_discount) || 0;
+  $("min").min = String(Math.floor(state.min / 5) * 5);
+  $("min").value = String(state.min);
+  $("minv").textContent = state.min + "%";
+  const when = data.generated_at ? new Date(data.generated_at) : null;
+  $("meta").textContent = `Ažurirano: ${when ? when.toLocaleString("sr-Latn-ME", { dateStyle: "medium", timeStyle: "short" }) : "–"} · ${state.offers.length} akcija ≥${state.min}%`;
+
+  if (Array.isArray(data.errors) && data.errors.length) {
+    const box = el("div", "errors"); box.append(el("strong", null, "Upozorenja:"));
+    const ul = el("ul"); data.errors.forEach((e) => ul.append(el("li", null, String(e)))); box.append(ul); $("errors").append(box);
+  }
+
+  const stores = [...new Set(state.offers.map((o) => o.store))].sort();
+  [["", "Sve"], ...stores.map((s) => [s, s])].forEach(([value, label]) => {
+    const b = el("button", null, label + (value ? ` (${state.offers.filter((o) => o.store === value).length})` : ""));
+    b.type = "button"; b.setAttribute("aria-pressed", String(value === state.store));
+    b.addEventListener("click", () => { state.store = value; [...$("stores").children].forEach((c) => c.setAttribute("aria-pressed", String(c === b))); fillCategories(); render(); });
+    $("stores").append(b);
+  });
+  fillCategories();
+
+  $("q").addEventListener("input", (e) => { state.q = fold(e.target.value.trim()); render(); });
+  $("category").addEventListener("change", (e) => { state.category = e.target.value; render(); });
+  $("sort").addEventListener("change", (e) => { state.sort = e.target.value; render(); });
+  $("min").addEventListener("input", (e) => { state.min = Number(e.target.value); $("minv").textContent = state.min + "%"; render(); });
+  $("onlyNew").addEventListener("change", (e) => { state.onlyNew = e.target.checked; render(); });
+  render();
+  renderCart();
+}
+
+function fillCategories() {
+  const sel = $("category");
+  const cats = sortGroups([...new Set(state.offers.filter((o) => !state.store || o.store === state.store).map((o) => o.group))]);
+  if (!cats.includes(state.category)) state.category = "";
+  while (sel.options.length > 1) sel.remove(1);
+  cats.forEach((c) => { const o = el("option", null, c); o.value = c; sel.append(o); });
+  sel.value = state.category;
+}
+
+function render() {
+  const list = state.offers.filter((o) =>
+    (!state.store || o.store === state.store) &&
+    (!state.category || o.group === state.category) &&
+    o.discount_pct >= state.min &&
+    (!state.onlyNew || o.is_new) &&
+    (!state.q || fold(o.name).includes(state.q)));
+  const by = {
+    discount: (a, b) => b.discount_pct - a.discount_pct || a.name.localeCompare(b.name, "sr"),
+    price: (a, b) => a.sale_price - b.sale_price,
+    name: (a, b) => a.name.localeCompare(b.name, "sr"),
+    valid: (a, b) => (a.valid_to || "9999").localeCompare(b.valid_to || "9999"),
+  }[state.sort];
+  list.sort(by);
+  $("count").textContent = `${list.length} proizvoda`;
+  const byGroup = new Map();
+  list.forEach((o) => { if (!byGroup.has(o.group)) byGroup.set(o.group, []); byGroup.get(o.group).push(o); });
+  const frag = document.createDocumentFragment();
+  sortGroups([...byGroup.keys()]).forEach((g) => {
+    const items = byGroup.get(g);
+    const section = el("section", "group");
+    const h = el("h2", null, g); h.append(el("span", "n", ` ${items.length}`));
+    const grid = el("div", "grid");
+    items.forEach((o) => grid.append(card(o)));
+    section.append(h, grid);
+    frag.append(section);
+  });
+  $("list").replaceChildren(frag);
+  if (!list.length) $("list").append(el("div", "empty", "Nema proizvoda za izabrane filtere."));
+}
+
+function sortGroups(names) {
+  const pos = (n) => { const i = state.groups.indexOf(n); return i < 0 ? 999 : i; };
+  return names.sort((a, b) => pos(a) - pos(b) || a.localeCompare(b, "sr"));
+}
+
+function card(o) {
+  const c = el("article", "card");
+  const top = el("div", "top");
+  top.append(el("span", "pct", `-${String(o.discount_pct).replace(".", ",")}%${o.suspicious ? " ⚠️" : ""}`), el("span", "store", o.store));
+  const name = el("div", "name");
+  const url = o.url && safeUrl(o.url);
+  const label = (o.is_new ? "🆕 " : "") + o.name;
+  if (url) { const a = el("a", null, label); a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer"; name.append(a); } else name.textContent = label;
+  const price = el("div", "price", money(o.sale_price) + (o.unit ? ` / ${o.unit}` : "") + (o.card_required ? " 💳" : ""));
+  price.append(el("span", "old", money(o.regular_price)));
+  const foot = el("div", "foot");
+  foot.append(el("span", null, o.category));
+  if (typeof o.stale_since === "string") foot.append(el("span", "stale", "stari podaci od " + dateLabel(o.stale_since)));
+  if (o.valid_to) foot.append(el("span", null, "važi do " + dateLabel(o.valid_to)));
+  if (o.card_required) foot.append(el("span", null, "uz karticu"));
+  if (isKg(o.unit)) foot.append(el("span", null, "cijena po kg"));
+  if (o.suspicious) foot.append(el("span", null, "redovna cijena podignuta"));
+  c.append(top, name, price, foot);
+  // Without product_id (older akcije.json) a product cannot be identified reliably, so no button.
+  if (o.product_id != null && toCents(o.sale_price) != null && toCents(o.regular_price) != null) {
+    const b = el("button", "add"); b.type = "button"; b.dataset.key = itemKey(o.store, o.product_id);
+    b.addEventListener("click", () => addToCart(o));
+    updateAddButton(b);
+    c.append(b);
+  }
+  return c;
+}
+
+/* ---------------- Shopping list ---------------- */
+
+const CART_KEY = "akcije.lista.v1";
+const MAX_QTY = 99;
+const cart = { items: new Map(), persistent: true, corrupt: false };
+
+function storageWorks() {
+  try { const k = CART_KEY + ".test"; localStorage.setItem(k, "1"); localStorage.removeItem(k); return true; } catch { return false; }
+}
+
+function validItem(it) {
+  const str = (v) => typeof v === "string" && v.length > 0 && v.length <= 500;
+  const cents = (v) => Number.isInteger(v) && v >= 0 && v < 1e9;
+  return it && typeof it === "object" && str(it.store) && str(it.product_id) && str(it.name) &&
+    cents(it.sale_cents) && cents(it.regular_cents) && Number.isInteger(it.qty) && it.qty >= 1 && it.qty <= MAX_QTY &&
+    typeof it.bought === "boolean" && typeof it.card_required === "boolean" &&
+    (it.unit === null || typeof it.unit === "string") &&
+    (it.valid_to === null || (typeof it.valid_to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(it.valid_to)));
+}
+
+function loadCart() {
+  cart.items = new Map();
+  cart.corrupt = false;
+  let raw = null;
+  try { raw = localStorage.getItem(CART_KEY); } catch { cart.persistent = false; return; }
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    if (!data || data.v !== 1 || typeof data.items !== "object" || data.items === null) throw new Error("format");
+    for (const it of Object.values(data.items)) {
+      if (validItem(it)) cart.items.set(itemKey(it.store, it.product_id), it); else cart.corrupt = true;
+    }
+  } catch { cart.corrupt = true; }
+}
+
+function saveCart() {
+  if (!cart.persistent) return;
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify({ v: 1, items: Object.fromEntries(cart.items) }));
+  } catch { cart.persistent = false; }
+}
+
+function changed() { saveCart(); renderCart(); document.querySelectorAll("button.add[data-key]").forEach(updateAddButton); }
+
+function addToCart(o) {
+  const key = itemKey(o.store, o.product_id);
+  const it = cart.items.get(key);
+  if (it) it.qty = Math.min(MAX_QTY, it.qty + 1);
+  else cart.items.set(key, {
+    store: String(o.store), product_id: String(o.product_id), name: String(o.name),
+    sale_cents: toCents(o.sale_price), regular_cents: toCents(o.regular_price),
+    valid_to: typeof o.valid_to === "string" ? o.valid_to : null, unit: typeof o.unit === "string" ? o.unit : null,
+    card_required: o.card_required === true, qty: 1, bought: false, added: new Date().toISOString(),
+  });
+  changed();
+}
+
+function updateAddButton(b) {
+  const it = cart.items.get(b.dataset.key);
+  b.textContent = it ? `✓ Na listi (${it.qty})` : "+ Na listu";
+  b.classList.toggle("on", Boolean(it));
+  b.setAttribute("aria-label", it ? `Na listi ${it.qty}, dodaj još jedan` : "Dodaj na listu");
+}
+
+/** Current state of a list item compared with today's akcije.json. */
+function itemStatus(it) {
+  const today = todayIso();
+  const base = { sale: it.sale_cents, regular: it.regular_cents, card: it.card_required, unit: it.unit, changed: false };
+  if (!state.loaded) {  // data not available: trust what was saved, only the saved date can expire it
+    return { ...base, expired: Boolean(it.valid_to && it.valid_to < today) };
+  }
+  const cur = state.byKey.get(itemKey(it.store, it.product_id));
+  if (!cur || (cur.valid_to && cur.valid_to < today)) return { ...base, expired: true };
+  const sale = toCents(cur.sale_price), regular = toCents(cur.regular_price);
+  if (sale == null || regular == null) return { ...base, expired: true };
+  return { sale, regular, card: cur.card_required === true, unit: typeof cur.unit === "string" ? cur.unit : null, changed: sale !== it.sale_cents, expired: false };
+}
+
+function cartSummary() {
+  const stores = new Map();
+  const t = { total: 0, remaining: 0, saved: 0, expired: 0, count: 0 };
+  for (const [key, it] of cart.items) {
+    const st = itemStatus(it);
+    if (!stores.has(it.store)) stores.set(it.store, { rows: [], total: 0, remaining: 0 });
+    const s = stores.get(it.store);
+    s.rows.push({ key, it, st });
+    t.count += 1;
+    if (st.expired) { t.expired += 1; continue; }
+    const line = st.sale * it.qty;
+    s.total += line; t.total += line;
+    if (!it.bought) { s.remaining += line; t.remaining += line; }
+    t.saved += Math.max(0, st.regular - st.sale) * it.qty;
+  }
+  const order = [...stores.keys()].sort((a, b) => a.localeCompare(b, "sr"));
+  return { stores: order.map((name) => [name, stores.get(name)]), t };
+}
+
+function renderCart() {
+  const { stores, t } = cartSummary();
+  const bar = $("cartBar");
+  bar.hidden = t.count === 0 && $("cart").hidden;
+  $("cartBarText").textContent = `Lista · ${t.count} · ${fmt(t.remaining)}`;
+  bar.setAttribute("aria-label", `Otvori šoping listu: ${t.count} stavki, preostalo ${fmt(t.remaining)}`);
+
+  const warn = $("cartWarn");
+  warn.replaceChildren();
+  if (!cart.persistent) warn.append(el("div", "warn", "⚠️ Lista se ne može sačuvati na ovom uređaju (npr. privatni režim). Važi samo dok ne zatvoriš stranicu."));
+  if (cart.corrupt) warn.append(el("div", "warn", "⚠️ Dio sačuvane liste je bio oštećen i nije učitan."));
+
+  const body = $("cartBody");
+  const frag = document.createDocumentFragment();
+  for (const [store, s] of stores) {
+    const sec = el("section", "cstore");
+    const h = el("h3", null, store);
+    h.append(el("span", "sub", `preostalo ${fmt(s.remaining)} · ukupno ${fmt(s.total)}`));
+    sec.append(h);
+    s.rows.forEach((row) => sec.append(cartItem(row)));
+    frag.append(sec);
+  }
+  body.replaceChildren(frag);
+  if (!t.count) body.append(el("div", "cart-empty", "Lista je prazna. Dodaj proizvode dugmetom „+ Na listu“."));
+
+  const tot = $("cartTotals");
+  tot.replaceChildren();
+  if (t.count) {
+    const line = (label, value, cls) => { tot.append(el("span", cls, label), el("span", cls, value)); };
+    line("Ukupno", fmt(t.total));
+    line("Preostalo za kupiti", fmt(t.remaining), "big");
+    line("Ušteđeno", fmt(t.saved), "saved");
+    if (t.expired) tot.append(el("span", "hint", `${t.expired} ${t.expired === 1 ? "stavka sa isteklom akcijom nije" : "stavke sa isteklom akcijom nisu"} u zbiru.`));
+  }
+  $("cartActions").hidden = !t.count;
+}
+
+function cartItem({ key, it, st }) {
+  const row = el("div", "item" + (it.bought ? " bought" : "") + (st.expired ? " expired" : ""));
+  const label = el("label");
+  const cb = el("input"); cb.type = "checkbox"; cb.checked = it.bought;
+  cb.setAttribute("aria-label", `Kupljeno: ${it.name}`);
+  cb.addEventListener("change", () => { it.bought = cb.checked; changed(); });
+  label.append(cb, el("span", "iname", it.name + (st.card ? " 💳" : "") + (it.bought ? " (kupljeno)" : "")));
+  row.append(label);
+
+  const line = el("div", "line");
+  const del = el("button", "icon", "🗑"); del.type = "button"; del.setAttribute("aria-label", `Ukloni ${it.name}`);
+  del.addEventListener("click", () => { cart.items.delete(key); changed(); });
+  if (st.expired) {
+    line.append(el("span", "gone", "⛔ akcija istekla"), el("span", "note", `bila ${fmt(it.sale_cents)}`));
+    const q = el("span", "qty"); q.append(el("span", "note", `× ${it.qty}${isKg(it.unit) ? " kg" : ""}`), del);
+    line.append(q);
+  } else {
+    line.append(el("span", "iprice", fmt(st.sale)));
+    if (st.changed) {
+      line.append(el("span", "old", fmt(it.sale_cents)));
+      line.append(el("span", "changed", "nova cijena"));
+    } else if (st.regular > st.sale) {
+      line.append(el("span", "old", fmt(st.regular)));
+    }
+    if (isKg(st.unit)) line.append(el("span", "note", "cijena po kg"));
+    if (st.card) line.append(el("span", "note", "uz karticu"));
+    const q = el("span", "qty");
+    const minus = el("button", "icon", "−"); minus.type = "button"; minus.disabled = it.qty <= 1;
+    minus.setAttribute("aria-label", `Smanji količinu: ${it.name}`);
+    minus.addEventListener("click", () => { it.qty = Math.max(1, it.qty - 1); changed(); });
+    const plus = el("button", "icon", "+"); plus.type = "button"; plus.disabled = it.qty >= MAX_QTY;
+    plus.setAttribute("aria-label", `Povećaj količinu: ${it.name}`);
+    plus.addEventListener("click", () => { it.qty = Math.min(MAX_QTY, it.qty + 1); changed(); });
+    q.append(minus, el("output", null, isKg(st.unit) ? `${it.qty} kg` : String(it.qty)), plus, el("span", "ltotal", fmt(st.sale * it.qty)), del);
+    line.append(q);
+  }
+  row.append(line);
+  return row;
+}
+
+function shareText() {
+  const { stores, t } = cartSummary();
+  const lines = [`🛒 Šoping lista (${dateLabel(todayIso())})`];
+  for (const [store, s] of stores) {
+    lines.push("", store);
+    for (const { it, st } of s.rows) {
+      const kg = isKg(st.unit);
+      const qty = kg ? `${it.qty} kg` : `${it.qty} ×`;
+      const mark = it.bought ? "✓" : "-";
+      if (st.expired) {
+        lines.push(`${mark} ${qty} ${it.name} (akcija istekla)`);
+      } else {
+        const per = kg ? " /kg" : "";
+        lines.push(`${mark} ${qty} ${it.name} à ${fmt(st.sale)}${per} = ${fmt(st.sale * it.qty)}${st.card ? " 💳" : ""}`);
+      }
+    }
+    lines.push(`Ukupno ${store}: ${fmt(s.total)}`);
+  }
+  lines.push("", `Ukupno: ${fmt(t.total)} · Preostalo: ${fmt(t.remaining)} · Ušteđeno: ${fmt(t.saved)}`);
+  if (t.expired) lines.push(`(${t.expired} sa isteklom akcijom nije u zbiru)`);
+  if (stores.some(([, s]) => s.rows.some((r) => r.st.card && !r.st.expired))) lines.push("💳 = cijena uz karticu prodavnice");
+  return lines.join("\n");
+}
+
+function message(text) { $("cartMsg").textContent = text; }
+
+async function share() {
+  const text = shareText();
+  $("shareText").hidden = true;
+  message("");
+  if (navigator.share) {
+    try { await navigator.share({ title: "Šoping lista", text }); return; }
+    catch (err) { if (err && err.name === "AbortError") return; }  // cancelled by the user
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    message("✓ Lista je kopirana. Zalijepi je u poruku.");
+  } catch {
+    const ta = $("shareText"); ta.value = text; ta.hidden = false; ta.focus(); ta.select();
+    message("Kopiranje nije uspjelo. Označi tekst ispod i kopiraj ga ručno.");
+  }
+}
+
+function openCart() {
+  $("cart").hidden = false; $("backdrop").hidden = false;
+  document.body.classList.add("cart-open");
+  $("cartBar").setAttribute("aria-expanded", "true");
+  renderCart();
+  $("cartClose").focus();
+}
+
+function closeCart() {
+  $("cart").hidden = true; $("backdrop").hidden = true;
+  document.body.classList.remove("cart-open");
+  $("cartBar").setAttribute("aria-expanded", "false");
+  $("shareText").hidden = true; message("");
+  renderCart();
+  if (!$("cartBar").hidden) $("cartBar").focus();
+}
+
+$("cartBar").addEventListener("click", openCart);
+$("cartClose").addEventListener("click", closeCart);
+$("backdrop").addEventListener("click", closeCart);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("cart").hidden) closeCart(); });
+$("share").addEventListener("click", share);
+$("clear").addEventListener("click", () => {
+  if (!window.confirm("Obrisati cijelu šoping listu?")) return;
+  cart.items.clear(); cart.corrupt = false; changed(); message("Lista je ispražnjena.");
+});
+// Another tab changed the list: reload it.
+window.addEventListener("storage", (e) => {
+  if (e.key !== CART_KEY) return;
+  loadCart(); renderCart(); document.querySelectorAll("button.add[data-key]").forEach(updateAddButton);
+});
+
+cart.persistent = storageWorks();
+loadCart();
+renderCart();
+</script>
+</body>
+</html>

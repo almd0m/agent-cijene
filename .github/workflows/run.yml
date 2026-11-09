@@ -1,0 +1,102 @@
+name: Akcije izvjestaj
+
+on:
+  schedule:
+    # Ponedjeljak i četvrtak u 06:17 UTC (07:17 po zimskom vremenu u Podgorici).
+    - cron: "17 6 * * 1,4"
+  workflow_dispatch: {}
+
+# contents: write je potreban da bi se site/akcije.json (main) i istorija cijena (branch "data") pushali nazad.
+permissions:
+  contents: write
+
+concurrency:
+  group: akcije
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+
+      # Istorija cijena živi na posebnom orphan branchu "data" (jedan commit, prepisuje se svaki put),
+      # da main ne raste sa svakom verzijom binarnog SQLite fajla.
+      - name: Preuzmi istoriju cijena (branch data)
+        id: history
+        run: |
+          mkdir -p data
+          if git ls-remote --exit-code --heads origin data > /dev/null; then
+            git fetch --depth=1 origin data
+            git cat-file blob FETCH_HEAD:istorija.sqlite > data/istorija.sqlite
+            echo "Istorija preuzeta ($(stat -c %s data/istorija.sqlite) bajtova)."
+          elif [ -f data/istorija.sqlite ]; then
+            echo "Branch data ne postoji; koristim data/istorija.sqlite iz maina (prelazak na branch data)."
+          else
+            echo "Branch data ne postoji; počinje nova istorija."
+          fi
+          if [ -f data/istorija.sqlite ]; then
+            echo "blob=$(git hash-object data/istorija.sqlite)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skupi akcije i pošalji email
+        id: akcije
+        run: python -m akcije
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          REPORT_TO: ${{ secrets.REPORT_TO }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MIN_DISCOUNT: ${{ vars.MIN_DISCOUNT }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          ONLY_NEW: ${{ vars.ONLY_NEW }}
+
+      - name: Podesi git korisnika
+        if: always()
+        run: |
+          git config user.name "akcije-bot"
+          git config user.email "akcije-bot@users.noreply.github.com"
+
+      # Program sam čuva akcije.json kad prodavnice padnu, pa se commituje i kad je run neuspješan (npr. pao email).
+      # Push se ponavlja poslije "pull --rebase", da ne padne ako je u međuvremenu pushan kod.
+      - name: Commit podataka za sajt (main)
+        if: always()
+        run: |
+          git add site/akcije.json
+          if git diff --cached --quiet; then
+            echo "Nema promjena na sajtu."
+            exit 0
+          fi
+          git commit -m "Podaci akcija $(date -u +%Y-%m-%d)"
+          for attempt in 1 2 3; do
+            if git pull --rebase --autostash origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME"; then
+              exit 0
+            fi
+            echo "Push nije uspio (pokušaj $attempt), ponavljam..."
+            sleep $((attempt * 5))
+          done
+          exit 1
+
+      # Samo ako je istorija uspješno preuzeta (inače bi se prava istorija prepisala praznom).
+      - name: Sačuvaj istoriju cijena (branch data, jedan commit)
+        if: always() && steps.history.outcome == 'success'
+        run: |
+          if [ ! -f data/istorija.sqlite ]; then
+            echo "Nema istorije za čuvanje."
+            exit 0
+          fi
+          blob=$(git hash-object -w data/istorija.sqlite)
+          if [ "$blob" = "${{ steps.history.outputs.blob }}" ]; then
+            echo "Istorija se nije promijenila."
+            exit 0
+          fi
+          tree=$(printf '100644 blob %s\tistorija.sqlite\n' "$blob" | git mktree)
+          commit=$(git commit-tree "$tree" -m "Istorija cijena $(date -u +%Y-%m-%d)")
+          git push --force origin "$commit:refs/heads/data"
+          echo "Istorija sačuvana na branchu data ($(stat -c %s data/istorija.sqlite) bajtova)."
