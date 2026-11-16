@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-12T16:07+01:00",
+ "generated_at": "2026-11-16T16:38+01:00",
  "min_discount": 30.0,
  "groups": [
   "Bebe i djeca",
@@ -21,11 +21,12 @@
  ],
  "errors": [
   "Kuća hemije: neočekivana greška (HTTPError). Detalji su u logu.",
-  "Idea: katalog „Redovna akcija“: strane 1–12 (GeminiError), strane 13–24 (GeminiError), strane 25–36 (GeminiError), strane 37–48 (GeminiError) nijesu pročitane, te akcije nedostaju.",
+  "Idea: katalog „Redovna akcija“ nije pročitan (strane 1–12 (GeminiError); strane 13–24 (GeminiError); strane 25–36 (GeminiError); strane 37–48 (GeminiError); strane 49–54 (GeminiError))",
   "Kuća hemije: podaci nisu osvježeni, na stranici su akcije od 8.11.2026.",
-  "Idea: pročitano samo 35 proizvoda, a prošli put 387. Moguće je da sajt nije pročitan do kraja."
+  "Idea: podaci nisu osvježeni, na stranici su akcije od 12.11.2026."
  ],
  "stale_stores": {
+  "Idea": "2026-11-12",
   "Kuća hemije": "2026-11-08"
  },
  "offers": [
@@ -93,7 +94,8 @@
    "url": "https://catalog.idea.co.me/2026/novembar-2026/redovna-akcija-0511-1811/?page=49",
    "card_required": false,
    "is_new": false,
-   "suspicious": false
+   "suspicious": false,
+   "stale_since": "2026-11-12"
   },
   {
    "store": "Kuća hemije",
@@ -126,7 +128,8 @@
    "url": "https://catalog.idea.co.me/2026/novembar-2026/redovna-akcija-0511-1811/?page=49",
    "card_required": false,
    "is_new": false,
-   "suspicious": false
+   "suspicious": false,
+   "stale_since": "2026-11-12"
   },
   {
    "store": "Idea",
@@ -142,7 +145,8 @@
    "url": "https://catalog.idea.co.me/2026/novembar-2026/redovna-akcija-0511-1811/?page=49",
    "card_required": false,
    "is_new": false,
-   "suspicious": false
+   "suspicious": false,
+   "stale_since": "2026-11-12"
   },
   {
    "store": "Voli",
@@ -157,7 +161,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/907",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -227,22 +231,6 @@
    "suspicious": false
   },
   {
-   "store": "Voli",
-   "product_id": "99481",
-   "name": "Mliječna čokolada sa cijelim lješnicima Prestige 220 g Kandi",
-   "group": "Slatkiši i grickalice",
-   "category": "Čokolade",
-   "regular_price": 5.75,
-   "sale_price": 2.59,
-   "discount_pct": 55.0,
-   "valid_to": "2026-11-14",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/4326",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false
-  },
-  {
    "store": "Cosmetics",
    "product_id": "158764",
    "name": "BRION gel za brijanje sensitive 240ML",
@@ -267,7 +255,7 @@
    "regular_price": 3.19,
    "sale_price": 1.49,
    "discount_pct": 53.3,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/2734",
    "card_required": false,
@@ -365,7 +353,7 @@
    "regular_price": 6.99,
    "sale_price": 3.49,
    "discount_pct": 50.1,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/1319",
    "card_required": false,
@@ -381,7 +369,7 @@
    "regular_price": 6.99,
    "sale_price": 3.49,
    "discount_pct": 50.1,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/1",
    "card_required": false,
@@ -390,32 +378,16 @@
   },
   {
    "store": "Voli",
-   "product_id": "99479",
-   "name": "Mliječna čokolada 220 g Kandit",
-   "group": "Slatkiši i grickalice",
-   "category": "Čokolade",
-   "regular_price": 5.19,
-   "sale_price": 2.59,
+   "product_id": "200533",
+   "name": "Kentucky pileća krilca 600g Marnevall",
+   "group": "Smrznuto",
+   "category": "Smrznuta piletina",
+   "regular_price": 5.99,
+   "sale_price": 2.99,
    "discount_pct": 50.1,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-11-25",
    "unit": "kom",
-   "url": "https://www.voli.me/proizvod/4324",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false
-  },
-  {
-   "store": "Voli",
-   "product_id": "120899",
-   "name": "Mliječna čokolada sa komadićima lješnika 210 g Kandi",
-   "group": "Slatkiši i grickalice",
-   "category": "Čokolade",
-   "regular_price": 5.19,
-   "sale_price": 2.59,
-   "discount_pct": 50.1,
-   "valid_to": "2026-11-14",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/460",
+   "url": "https://www.voli.me/proizvod/6675",
    "card_required": false,
    "is_new": false,
    "suspicious": false
@@ -1081,7 +1053,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/7733",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -1097,7 +1069,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/6579",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -1144,22 +1116,6 @@
    "valid_to": "2026-11-30",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/4302",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false
-  },
-  {
-   "store": "Voli",
-   "product_id": "200533",
-   "name": "Kentucky pileća krilca 600g Marnevall",
-   "group": "Smrznuto",
-   "category": "Smrznuta piletina",
-   "regular_price": 5.99,
-   "sale_price": 3.29,
-   "discount_pct": 45.1,
-   "valid_to": "2026-11-14",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/6675",
    "card_required": false,
    "is_new": false,
    "suspicious": false
@@ -1258,7 +1214,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/5965",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -1286,7 +1242,7 @@
    "regular_price": 1.75,
    "sale_price": 0.99,
    "discount_pct": 43.4,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-12-15",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/6142",
    "card_required": false,
@@ -1387,7 +1343,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/6578",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -1415,7 +1371,7 @@
    "regular_price": 2.59,
    "sale_price": 1.49,
    "discount_pct": 42.5,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/2732",
    "card_required": false,
@@ -1797,22 +1753,6 @@
    "suspicious": false
   },
   {
-   "store": "Voli",
-   "product_id": "117543",
-   "name": "Duel deterdžent  za veš 3kg selection universal",
-   "group": "Domaćinstvo i čišćenje",
-   "category": "Pranje veša",
-   "regular_price": 4.89,
-   "sale_price": 2.99,
-   "discount_pct": 38.9,
-   "valid_to": "2026-11-30",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/7282",
-   "card_required": false,
-   "is_new": true,
-   "suspicious": false
-  },
-  {
    "store": "Cosmetics",
    "product_id": "157984",
    "name": "NIVEA deo derma control extra comfort man 150ML",
@@ -2150,22 +2090,6 @@
    "stale_since": "2026-11-08"
   },
   {
-   "store": "Voli",
-   "product_id": "76261",
-   "name": "Ekstra wurst 350 g Cekin Srbija",
-   "group": "Meso i riba",
-   "category": "Parizeri i salame",
-   "regular_price": 1.59,
-   "sale_price": 0.99,
-   "discount_pct": 37.7,
-   "valid_to": "2026-11-14",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/3717",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false
-  },
-  {
    "store": "Cosmetics",
    "product_id": "143386",
    "name": "GILLETTE blue 3 comfor cart",
@@ -2198,125 +2122,6 @@
    "suspicious": false
   },
   {
-   "store": "Kuća hemije",
-   "product_id": "80171",
-   "name": "BOROTALCO DEO MEN ROLL-ON EXTRA DRY AMBER",
-   "group": "Lična higijena",
-   "category": "Muška njega",
-   "regular_price": 3.99,
-   "sale_price": 2.49,
-   "discount_pct": 37.6,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/borotalco-deo-men-roll-on-extra-dry-amber.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "80172",
-   "name": "BOROTALCO DEO MEN ROLL-ON EXTRA DRY UNIQUE",
-   "group": "Lična higijena",
-   "category": "Muška njega",
-   "regular_price": 3.99,
-   "sale_price": 2.49,
-   "discount_pct": 37.6,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/borotalco-deo-men-roll-on-extra-dry-unique.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "80173",
-   "name": "BOROTALCO DEO MEN ROLL-ON INVISIBLE MARINE",
-   "group": "Lična higijena",
-   "category": "Muška njega",
-   "regular_price": 3.99,
-   "sale_price": 2.49,
-   "discount_pct": 37.6,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/borotalco-deo-men-roll-on-invisible-marine.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "80168",
-   "name": "BOROTALCO DEO MEN SPRAY EXTRA DRY AMBER",
-   "group": "Lična higijena",
-   "category": "Muška njega",
-   "regular_price": 3.99,
-   "sale_price": 2.49,
-   "discount_pct": 37.6,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/borotalco-deo-men-spray-extra-dry-amber.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "80169",
-   "name": "BOROTALCO DEO MEN SPRAY EXTRA DRY UNIQUE",
-   "group": "Lična higijena",
-   "category": "Muška njega",
-   "regular_price": 3.99,
-   "sale_price": 2.49,
-   "discount_pct": 37.6,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/borotalco-deo-men-spray-extra-dry-unique.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "80170",
-   "name": "BOROTALCO DEO MEN SPRAY INVISIBLE MARINE",
-   "group": "Lična higijena",
-   "category": "Muška njega",
-   "regular_price": 3.99,
-   "sale_price": 2.49,
-   "discount_pct": 37.6,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/borotalco-deo-men-spray-invisible-marine.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "89289",
-   "name": "BOROTALCO DEO MEN SPRAY INVISIBLE MUSK SCENT 150ML",
-   "group": "Lična higijena",
-   "category": "Muška njega",
-   "regular_price": 3.99,
-   "sale_price": 2.49,
-   "discount_pct": 37.6,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/borotalco-deo-men-spray-invisible-musk-scent-150ml.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
-  },
-  {
    "store": "Voli",
    "product_id": "96049",
    "name": "Borotalco deo roll on original fresh 50ml",
@@ -2329,7 +2134,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/4246",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -2345,42 +2150,8 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/4064",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "104121",
-   "name": "BOROTALCO MEN FRESH OCEANIC WOODS DEZODORANS ROLL-ON 50ML",
-   "group": "Lična higijena",
-   "category": "Muška njega",
-   "regular_price": 3.99,
-   "sale_price": 2.49,
-   "discount_pct": 37.6,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/borotalco-deo-men-roll-on-fresh-oceanic-woods-50ml.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "104120",
-   "name": "BOROTALCO MEN FRESH OCEANIC WOODS DEZODORANS SPREJ 150ML",
-   "group": "Lična higijena",
-   "category": "Muška njega",
-   "regular_price": 3.99,
-   "sale_price": 2.49,
-   "discount_pct": 37.6,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/borotalco-deo-men-spray-fresh-oceanic-woods-150ml.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
   },
   {
    "store": "Cosmetics",
@@ -2442,6 +2213,22 @@
    "valid_to": "2026-12-30",
    "unit": "40ML",
    "url": "https://cosmetics-market.com/products/police-to-be-restyling-edt-40ml/135513",
+   "card_required": false,
+   "is_new": false,
+   "suspicious": false
+  },
+  {
+   "store": "Voli",
+   "product_id": "137943",
+   "name": "Šunka U Ovitku Gavrilovic",
+   "group": "Meso i riba",
+   "category": "Šunke i mortadele",
+   "regular_price": 9.45,
+   "sale_price": 5.99,
+   "discount_pct": 36.6,
+   "valid_to": "2026-11-25",
+   "unit": "kg",
+   "url": "https://www.voli.me/proizvod/6372",
    "card_required": false,
    "is_new": false,
    "suspicious": false
@@ -2615,7 +2402,7 @@
    "regular_price": 4.69,
    "sale_price": 2.99,
    "discount_pct": 36.3,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/3929",
    "card_required": false,
@@ -2631,7 +2418,7 @@
    "regular_price": 4.69,
    "sale_price": 2.99,
    "discount_pct": 36.3,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/3930",
    "card_required": false,
@@ -2647,7 +2434,7 @@
    "regular_price": 4.69,
    "sale_price": 2.99,
    "discount_pct": 36.3,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/3945",
    "card_required": false,
@@ -2663,7 +2450,7 @@
    "regular_price": 4.69,
    "sale_price": 2.99,
    "discount_pct": 36.3,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/3491",
    "card_required": false,
@@ -2704,22 +2491,6 @@
   },
   {
    "store": "Voli",
-   "product_id": "177212",
-   "name": "Moja kravica pavlaka za kuvanje 20%mm 500ml EDGE Imlek",
-   "group": "Mliječni proizvodi i jaja",
-   "category": "Pavlake",
-   "regular_price": 2.49,
-   "sale_price": 1.59,
-   "discount_pct": 36.1,
-   "valid_to": "2026-11-25",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/6039",
-   "card_required": false,
-   "is_new": true,
-   "suspicious": false
-  },
-  {
-   "store": "Voli",
    "product_id": "183879",
    "name": "Piškote 200 g Lago",
    "group": "Ostalo",
@@ -2731,7 +2502,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/4823",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -2759,7 +2530,7 @@
    "regular_price": 7.09,
    "sale_price": 4.55,
    "discount_pct": 35.8,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-12-15",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/6113",
    "card_required": false,
@@ -2779,7 +2550,7 @@
    "unit": "kg",
    "url": "https://www.voli.me/proizvod/990",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -2829,23 +2600,6 @@
    "card_required": false,
    "is_new": false,
    "suspicious": false
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "94565",
-   "name": "Burberry Hero 50ml EDT",
-   "group": "Parfemi",
-   "category": "Muški parfemi",
-   "regular_price": 85.0,
-   "sale_price": 55.0,
-   "discount_pct": 35.3,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/burberry-hero-50ml-edt.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
   },
   {
    "store": "Cosmetics",
@@ -2910,7 +2664,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/7373",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -2925,6 +2679,22 @@
    "valid_to": "2026-11-25",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/7374",
+   "card_required": false,
+   "is_new": false,
+   "suspicious": false
+  },
+  {
+   "store": "Voli",
+   "product_id": "213454",
+   "name": "Ariel liquid ms40 pranja 1.8l",
+   "group": "Domaćinstvo i čišćenje",
+   "category": "Pranje veša",
+   "regular_price": 13.85,
+   "sale_price": 8.99,
+   "discount_pct": 35.1,
+   "valid_to": "2026-11-30",
+   "unit": "kom",
+   "url": "https://www.voli.me/proizvod/8235",
    "card_required": false,
    "is_new": true,
    "suspicious": false
@@ -2941,22 +2711,6 @@
    "valid_to": "2027-01-31",
    "unit": "400ML",
    "url": "https://cosmetics-market.com/products/prorapid-balzam-poslije-brijanja-400ml/158275",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false
-  },
-  {
-   "store": "Voli",
-   "product_id": "9193",
-   "name": "Tečni deterdžent Perwoll balsam magic 990 ml",
-   "group": "Domaćinstvo i čišćenje",
-   "category": "Pranje veša",
-   "regular_price": 4.59,
-   "sale_price": 2.99,
-   "discount_pct": 34.9,
-   "valid_to": "2026-11-12",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/4104",
    "card_required": false,
    "is_new": false,
    "suspicious": false
@@ -3118,7 +2872,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/1959",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -3149,22 +2903,6 @@
    "valid_to": "2026-11-30",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/1389",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false
-  },
-  {
-   "store": "Voli",
-   "product_id": "149463",
-   "name": "Dobra ovsena kaša šumsko voće 60g",
-   "group": "Hljeb, tjestenina i žitarice",
-   "category": "Cerealije (musli, corn flakes)",
-   "regular_price": 0.75,
-   "sale_price": 0.49,
-   "discount_pct": 34.7,
-   "valid_to": "2026-11-30",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/1388",
    "card_required": false,
    "is_new": false,
    "suspicious": false
@@ -3230,7 +2968,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/4818",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -3246,7 +2984,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/4819",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -3258,29 +2996,12 @@
    "regular_price": 6.65,
    "sale_price": 4.39,
    "discount_pct": 34.0,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-12-15",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/1433",
    "card_required": false,
    "is_new": false,
    "suspicious": false
-  },
-  {
-   "store": "Kuća hemije",
-   "product_id": "91857",
-   "name": "MONTBLANC LEGEND 50ML EDT",
-   "group": "Parfemi",
-   "category": "Muški parfemi",
-   "regular_price": 59.0,
-   "sale_price": 39.0,
-   "discount_pct": 33.9,
-   "valid_to": "2026-11-14",
-   "unit": null,
-   "url": "https://drogerija.me/montblanc-legend-50ml-edt.html",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false,
-   "stale_since": "2026-11-08"
   },
   {
    "store": "Voli",
@@ -3291,7 +3012,7 @@
    "regular_price": 7.25,
    "sale_price": 4.79,
    "discount_pct": 33.9,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-12-15",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/461",
    "card_required": false,
@@ -3326,6 +3047,22 @@
    "valid_to": "2026-11-21",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/29",
+   "card_required": false,
+   "is_new": false,
+   "suspicious": false
+  },
+  {
+   "store": "Voli",
+   "product_id": "161481",
+   "name": "Sirko 60% 50 g Šabačka Mljekara",
+   "group": "Mliječni proizvodi i jaja",
+   "category": "Sirni namaz i kajmak",
+   "regular_price": 0.89,
+   "sale_price": 0.59,
+   "discount_pct": 33.7,
+   "valid_to": "2026-12-15",
+   "unit": "kom",
+   "url": "https://www.voli.me/proizvod/1752",
    "card_required": false,
    "is_new": false,
    "suspicious": false
@@ -3391,7 +3128,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/7356",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -3403,7 +3140,7 @@
    "regular_price": 1.49,
    "sale_price": 0.99,
    "discount_pct": 33.6,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/4293",
    "card_required": false,
@@ -3435,7 +3172,7 @@
    "regular_price": 5.55,
    "sale_price": 3.69,
    "discount_pct": 33.5,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/3915",
    "card_required": false,
@@ -3595,7 +3332,7 @@
    "regular_price": 3.29,
    "sale_price": 2.19,
    "discount_pct": 33.4,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-12-15",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/6907",
    "card_required": false,
@@ -3616,7 +3353,8 @@
    "url": "https://catalog.idea.co.me/2026/novembar-2026/redovna-akcija-0511-1811/?page=51",
    "card_required": false,
    "is_new": false,
-   "suspicious": false
+   "suspicious": false,
+   "stale_since": "2026-11-12"
   },
   {
    "store": "Cosmetics",
@@ -3679,38 +3417,6 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/7176",
    "card_required": false,
-   "is_new": true,
-   "suspicious": false
-  },
-  {
-   "store": "Voli",
-   "product_id": "135381",
-   "name": "Toalet papir troslojni exclusive breskva 10 komada Volim",
-   "group": "Domaćinstvo i čišćenje",
-   "category": "Toalet papir",
-   "regular_price": 2.65,
-   "sale_price": 1.79,
-   "discount_pct": 32.5,
-   "valid_to": "2026-11-15",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/894",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false
-  },
-  {
-   "store": "Voli",
-   "product_id": "135379",
-   "name": "Toalet papir troslojni exclusive kamilica 10 komada Volim",
-   "group": "Domaćinstvo i čišćenje",
-   "category": "Toalet papir",
-   "regular_price": 2.65,
-   "sale_price": 1.79,
-   "discount_pct": 32.5,
-   "valid_to": "2026-11-15",
-   "unit": "kom",
-   "url": "https://www.voli.me/proizvod/892",
-   "card_required": false,
    "is_new": false,
    "suspicious": false
   },
@@ -3762,7 +3468,8 @@
    "url": "https://catalog.idea.co.me/2026/novembar-2026/redovna-akcija-0511-1811/?page=51",
    "card_required": false,
    "is_new": false,
-   "suspicious": false
+   "suspicious": false,
+   "stale_since": "2026-11-12"
   },
   {
    "store": "Cosmetics",
@@ -3843,6 +3550,22 @@
    "url": "https://www.voli.me/proizvod/5970",
    "card_required": false,
    "is_new": false,
+   "suspicious": false
+  },
+  {
+   "store": "Voli",
+   "product_id": "201629",
+   "name": "Omekšivač za veš Lunar 800ml Ornel",
+   "group": "Domaćinstvo i čišćenje",
+   "category": "Pranje veša",
+   "regular_price": 3.29,
+   "sale_price": 2.25,
+   "discount_pct": 31.6,
+   "valid_to": "2026-12-15",
+   "unit": "kom",
+   "url": "https://www.voli.me/proizvod/6908",
+   "card_required": false,
+   "is_new": true,
    "suspicious": false
   },
   {
@@ -3945,22 +3668,6 @@
   },
   {
    "store": "Voli",
-   "product_id": "66449",
-   "name": "Mortadela gran sigillo sa pistacima aunteticna Beretta",
-   "group": "Meso i riba",
-   "category": "Šunke i mortadele",
-   "regular_price": 11.59,
-   "sale_price": 7.99,
-   "discount_pct": 31.1,
-   "valid_to": "2026-11-14",
-   "unit": "kg",
-   "url": "https://www.voli.me/proizvod/3572",
-   "card_required": false,
-   "is_new": false,
-   "suspicious": false
-  },
-  {
-   "store": "Voli",
    "product_id": "6059",
    "name": "Sir Zdenka 140 g 35% mliječne masti classic",
    "group": "Mliječni proizvodi i jaja",
@@ -3968,7 +3675,7 @@
    "regular_price": 2.89,
    "sale_price": 1.99,
    "discount_pct": 31.1,
-   "valid_to": "2026-11-12",
+   "valid_to": "2026-12-12",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/3473",
    "card_required": false,
@@ -4003,6 +3710,38 @@
    "valid_to": "2026-12-31",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/8123",
+   "card_required": false,
+   "is_new": false,
+   "suspicious": false
+  },
+  {
+   "store": "Voli",
+   "product_id": "188981",
+   "name": "Grašak 400 g lim Flora",
+   "group": "Namirnice i začini",
+   "category": "Zimnica",
+   "regular_price": 1.29,
+   "sale_price": 0.89,
+   "discount_pct": 31.0,
+   "valid_to": "2026-11-30",
+   "unit": "kom",
+   "url": "https://www.voli.me/proizvod/5235",
+   "card_required": false,
+   "is_new": false,
+   "suspicious": false
+  },
+  {
+   "store": "Voli",
+   "product_id": "22713",
+   "name": "Kukuruz šećerac 400 g (zamrznuto) Flora",
+   "group": "Smrznuto",
+   "category": "Smrznuto povrće",
+   "regular_price": 1.29,
+   "sale_price": 0.89,
+   "discount_pct": 31.0,
+   "valid_to": "2026-12-12",
+   "unit": "kom",
+   "url": "https://www.voli.me/proizvod/2868",
    "card_required": false,
    "is_new": false,
    "suspicious": false
@@ -4138,7 +3877,8 @@
    "url": "https://catalog.idea.co.me/2026/novembar-2026/redovna-akcija-0511-1811/?page=51",
    "card_required": false,
    "is_new": false,
-   "suspicious": false
+   "suspicious": false,
+   "stale_since": "2026-11-12"
   },
   {
    "store": "Voli",
@@ -4217,7 +3957,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/42",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -4233,7 +3973,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/2587",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -4245,7 +3985,7 @@
    "regular_price": 5.09,
    "sale_price": 3.55,
    "discount_pct": 30.3,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-12-15",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/4053",
    "card_required": false,
@@ -4342,7 +4082,7 @@
    "regular_price": 2.99,
    "sale_price": 2.09,
    "discount_pct": 30.1,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-12-15",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/6365",
    "card_required": false,
@@ -4358,7 +4098,7 @@
    "regular_price": 2.99,
    "sale_price": 2.09,
    "discount_pct": 30.1,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-12-15",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/6904",
    "card_required": false,
@@ -4374,7 +4114,7 @@
    "regular_price": 2.99,
    "sale_price": 2.09,
    "discount_pct": 30.1,
-   "valid_to": "2026-11-14",
+   "valid_to": "2026-12-15",
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/6905",
    "card_required": false,
@@ -4411,7 +4151,7 @@
    "unit": "kom",
    "url": "https://www.voli.me/proizvod/6719",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -4478,7 +4218,7 @@
    "unit": "100ML",
    "url": "https://cosmetics-market.com/products/borsalino-amber-note-intense-homme-edp-100ml/166467",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -4494,7 +4234,7 @@
    "unit": "50ML",
    "url": "https://cosmetics-market.com/products/borsalino-amber-note-intense-homme-edp-50ml/166468",
    "card_required": false,
-   "is_new": true,
+   "is_new": false,
    "suspicious": false
   },
   {
@@ -4943,7 +4683,8 @@
    "url": "https://catalog.idea.co.me/2026/novembar-2026/redovna-akcija-0511-1811/?page=51",
    "card_required": false,
    "is_new": false,
-   "suspicious": false
+   "suspicious": false,
+   "stale_since": "2026-11-12"
   },
   {
    "store": "Cosmetics",
